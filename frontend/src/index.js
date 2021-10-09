@@ -1,0 +1,40 @@
+import HomeScreen from './srceens/HomeScreen';
+import ProductScreen from './srceens/ProductScreen';
+import { hideLoading, parseRequestUrl, showLoading } from './utils';
+import Error404Screen from './srceens/Error404Screen';
+import CartScreen from './srceens/CartScreen';
+import SigninScreen from './srceens/SigninScreen';
+import Header from './Header';
+import RegisterScreen from './srceens/RegisterScreen';
+import ProfileScreen from './srceens/ProfileScreen';
+import ShippingScreen from './srceens/ShippingScreen';
+
+const routes = {
+  '/': HomeScreen,
+  '/product/:id': ProductScreen,
+  '/cart/:id': CartScreen,
+  '/cart': CartScreen,
+  '/signin': SigninScreen,
+  '/register':RegisterScreen,
+  '/profile':ProfileScreen,
+  '/shipping':ShippingScreen,
+};
+const router = async () => {
+  showLoading()
+  const request = parseRequestUrl();
+  const parseUrl =
+    (request.resource ? `/${request.resource}` : '/') +
+    (request.id ? '/:id' : '') +
+    (request.verb ? `/${request.verb}` : '');
+  const screen = routes[parseUrl] ? routes[parseUrl] : Error404Screen;
+  const header = document.getElementById('Header-container');
+  header.innerHTML = await Header.render();
+  await Header.after_render();
+
+  const main = document.getElementById('main-container');
+  main.innerHTML = await screen.render();
+  if(screen.after_render)await screen.after_render();
+  hideLoading()
+};
+window.addEventListener('load', router);
+window.addEventListener('hashchange', router);

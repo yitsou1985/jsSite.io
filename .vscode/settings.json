@@ -1,0 +1,5 @@
+{
+  "eslint.enable": true,
+  "git.ignoreLimitWarning": true,
+  "liveServer.settings.port": 5502
+}
